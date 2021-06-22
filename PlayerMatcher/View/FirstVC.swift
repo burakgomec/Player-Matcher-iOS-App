@@ -16,7 +16,10 @@ class FirstVC: UIViewController {
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var signInButton: UIButton!
     
-    @IBOutlet weak var groupStackView: UIStackView!
+    @IBOutlet weak var generalStackView: UIStackView!
+    
+    
+    @IBOutlet weak var centerConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,15 +34,27 @@ class FirstVC: UIViewController {
         view.addGestureRecognizer(endEditingGesture)
 
     }
-
+    
+  
     override func viewWillAppear(_ animated: Bool) {
+        generalStackView.bounds.origin.x += self.view.bounds.width
+        //generalStackView.bounds.origin.x -= 20
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        UIView.animate(withDuration: 0.5, delay: 0.00, options: .curveLinear, animations: {
+            self.generalStackView.bounds.origin.x -= self.view.bounds.width
+            self.view.layoutIfNeeded()
+            }, completion: nil)
+    }
+
     func prepareForViewRadius(){
         signUpButton.layer.cornerRadius = 22
         signInButton.layer.cornerRadius = 22
@@ -64,19 +79,32 @@ class FirstVC: UIViewController {
     }
     
     @IBAction func signIn(_ sender: Any) {
+        UIView.animate(withDuration: 1, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveLinear, animations: {
+            let bounds = self.signInButton.bounds
+            self.signInButton.bounds = CGRect(x: bounds.origin.x - 10 , y: bounds.origin.y , width: bounds.size.width + 30 , height: bounds.size.height )
+            self.signInButton.isEnabled = false
+            
+            }, completion: { _ in self.signInButton.isEnabled = true })
+        
         if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
-            WebService.shared.loginRequests(loginNumber: 1,username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
+            WebService.shared.loginRequests(loginNumber: 1, username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
                 if control{
                     DispatchQueue.main.async {
+                        User.setUser(username: self.userNameText.text!, email: self.emailText.text!, password: self.passwordText.text!)
                         self.performSegue(withIdentifier: "toMainVC", sender: nil)
                     }
+                   
                 }
                 else{
                     DispatchQueue.main.async {
+                        //self.generalStackView.bounds.origin.x += self.view.bounds.width
+                        self.generalStackView.alpha = 1
                         self.makeAlert(title: "Error", message: result ?? "An error occurred")
                     }
                 }
             }
+            
+            
         }
         else{
             self.makeAlert(title: "Error", message: "Please fill required fields")
@@ -85,30 +113,38 @@ class FirstVC: UIViewController {
     }
     
     @IBAction func signUp(_ sender: Any) {
-        if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
+        
+        UIView.animate(withDuration: 1, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveLinear, animations: {
+            let bounds = self.signUpButton.bounds
+            self.signUpButton.bounds = CGRect(x: bounds.origin.x - 10 , y: bounds.origin.y , width: bounds.size.width + 30 , height: bounds.size.height )
+            self.signUpButton.isEnabled = false
+            
+            }, completion: { _ in self.signUpButton.isEnabled = true })
+
+
+       if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
             WebService.shared.loginRequests(loginNumber: 2,username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
                 if control{
                     DispatchQueue.main.async {
-                        /*
-                        UIView.animate(withDuration: 1) {
-                            //self.makeAlert(title: "Success", message: "you have successfully registered")
-                        } completion: { _ in
-                            
-                        }
-                        */
+                        User.setUser(username: self.userNameText.text!, email: self.emailText.text!, password: self.passwordText.text!)
                         self.performSegue(withIdentifier: "toMainVC", sender: nil)
                     }
                 }
                 else{
                     DispatchQueue.main.async {
-                            self.makeAlert(title: "Error", message: result ?? "An error occurred")
+                        //self.generalStackView.bounds.origin.x += self.view.bounds.width
+                        self.generalStackView.alpha = 1
+                        self.makeAlert(title: "Error", message: result ?? "An error occurred")
                     }
                 }
             }
+        
         }
+       
         else{
             self.makeAlert(title: "Error", message: "Please fill required fields")
         }
+ 
     }
     
     

@@ -13,8 +13,8 @@ class WebService{
     static let shared = WebService()
     let session = URLSession.shared
     
+    
     func test(completion: @escaping (String?)->()){
-
         guard let url  = URL(string: "http://localhost:5001/api/v1/Home") else { return print("An error occurred in the url")}
         
         var request = URLRequest(url:url)
@@ -35,10 +35,10 @@ class WebService{
 
     func loginRequests(loginNumber: Int, username: String, email: String, password: String, completion: @escaping (Bool,String?)->()){
         var url : URL?
-        if(loginNumber == 1){
+        if(loginNumber == 1){//Sign In Request
             url = URL(string: "http://localhost:5001/api/v1/Home/signin")
         }
-        else{
+        else{//Sign Up Request
             url = URL(string: "http://localhost:5001/api/v1/Home/signup")
         }
     
@@ -74,13 +74,43 @@ class WebService{
 
     }
     
+
+    func findPlayerRequest(completion: @escaping (Bool,Player?)->()){
+        let url = URL(string: "http://localhost:5001/api/v1/GameScene/matchmaking")
+        var request = URLRequest(url: url!)
+     
+        guard let username = User.getUser()?.username else { return }
+        let parameterDictionary = ["username":username]
+        
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let body = try? JSONSerialization.data(withJSONObject: parameterDictionary, options: []) else{ return completion(false,nil)}
+        
+        request.httpBody = body
     
-    func levelUpRequest(){//Get
+        session.dataTask(with: request) { data, response, error in
+            if error == nil && data != nil{
+                let jsonDecoder = JSONDecoder()
+                let player = try? jsonDecoder.decode(Player.self, from: data!)
+
+                completion(true,player)
+            }
+            else{
+                completion(false, nil)
+            }
+        }.resume()
     }
-    func logoutRequest(){//Get
+    
+    
+    
+    
+    func levelUpRequest(){
+        
         
     }
-    func findPlayerRequest(){//Get
+    func logoutRequest(){
+        
         
     }
     

@@ -16,17 +16,27 @@ class MainVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        activityIndicator.stopAnimating()
     }
     
     @IBAction func searchPlayer(_ sender: Any) {
         activityIndicator.startAnimating()
-        WebService.shared.test { result in
-            DispatchQueue.main.async {
-                self.matchedPlayerInfo.isHidden = false
-                self.matchedPlayerInfo.text = result
-                self.activityIndicator.stopAnimating()
-                self.activityIndicator.isHidden = true
+        WebService.shared.findPlayerRequest { control, player in
+            if(control && player != nil){
+                DispatchQueue.main.async {
+                    let result = "Matched Player's Name: \(String(describing: player!.username))\n Matched Player's Level: \(String(describing: player!.level))\n" +
+                    "Matched Player's Kd Ratio: \(String(describing: player!.kdRatio)) "
+                    self.matchedPlayerInfo.isHidden = false
+                    self.matchedPlayerInfo.text = result
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.isHidden = true
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.isHidden = true
+                    self.makeAlert(title: "Error", message: "An error occurred")
+                }
             }
         }
     }
