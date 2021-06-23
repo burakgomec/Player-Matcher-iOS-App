@@ -11,12 +11,13 @@ class User{
     var username: String
     var email: String
     var password: String
+    var sessionToken : String
     
     private static var singleUser: User?
     
-    static func setUser(username: String, email: String, password: String){
+    static func setUser(username: String, email: String, password: String, token: String){
         if(singleUser == nil){
-            singleUser = User(username: username, email: email, password: password)
+            singleUser = User(username: username, email: email, password: password,token: token)
         }
     }
     
@@ -29,10 +30,11 @@ class User{
         }
     }
     
-    private init(username: String, email: String, password: String){
+    private init(username: String, email: String, password: String, token : String){
         self.username = username
         self.email = email
         self.password = password
+        self.sessionToken = token
     }
 }
 

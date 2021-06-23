@@ -32,16 +32,19 @@ class FirstVC: UIViewController {
 
         let endEditingGesture = UITapGestureRecognizer(target: self, action: #selector(endEditing))
         view.addGestureRecognizer(endEditingGesture)
-
     }
     
   
+    
+    
     override func viewWillAppear(_ animated: Bool) {
+        self.generalStackView.alpha = 1
         generalStackView.bounds.origin.x += self.view.bounds.width
-        //generalStackView.bounds.origin.x -= 20
+        userNameText.text = ""
+        emailText.text = ""
+        passwordText.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -68,6 +71,7 @@ class FirstVC: UIViewController {
     
     @objc func keyboardWillShow(sender: NSNotification) {
          self.view.frame.origin.y = -150 // Move view 150 points upward
+
     }
 
     @objc func keyboardWillHide(sender: NSNotification) {
@@ -80,31 +84,30 @@ class FirstVC: UIViewController {
     
     @IBAction func signIn(_ sender: Any) {
         UIView.animate(withDuration: 1, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveLinear, animations: {
-            let bounds = self.signInButton.bounds
-            self.signInButton.bounds = CGRect(x: bounds.origin.x - 10 , y: bounds.origin.y , width: bounds.size.width + 30 , height: bounds.size.height )
-            self.signInButton.isEnabled = false
-            
+                let bounds = self.signInButton.bounds
+                self.signInButton.bounds = CGRect(x: bounds.origin.x - 10 , y: bounds.origin.y , width: bounds.size.width + 30 , height: bounds.size.height )
+                self.signInButton.isEnabled = false
             }, completion: { _ in self.signInButton.isEnabled = true })
         
         if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
+            
+            UIView.animate(withDuration: 0.3,delay: 0, options: .curveEaseOut) {
+                self.generalStackView.alpha = 0
+            }
+
             WebService.shared.loginRequests(loginNumber: 1, username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
                 if control{
-                    DispatchQueue.main.async {
-                        User.setUser(username: self.userNameText.text!, email: self.emailText.text!, password: self.passwordText.text!)
+                    DispatchQueue.main.async {                      
                         self.performSegue(withIdentifier: "toMainVC", sender: nil)
                     }
-                   
                 }
                 else{
                     DispatchQueue.main.async {
-                        //self.generalStackView.bounds.origin.x += self.view.bounds.width
-                        self.generalStackView.alpha = 1
                         self.makeAlert(title: "Error", message: result ?? "An error occurred")
+                        self.generalStackView.alpha = 1
                     }
                 }
             }
-            
-            
         }
         else{
             self.makeAlert(title: "Error", message: "Please fill required fields")
@@ -115,30 +118,30 @@ class FirstVC: UIViewController {
     @IBAction func signUp(_ sender: Any) {
         
         UIView.animate(withDuration: 1, delay: 0.0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveLinear, animations: {
-            let bounds = self.signUpButton.bounds
-            self.signUpButton.bounds = CGRect(x: bounds.origin.x - 10 , y: bounds.origin.y , width: bounds.size.width + 30 , height: bounds.size.height )
-            self.signUpButton.isEnabled = false
-            
+                let bounds = self.signUpButton.bounds
+                self.signUpButton.bounds = CGRect(x: bounds.origin.x - 10 , y: bounds.origin.y , width: bounds.size.width + 30 , height: bounds.size.height )
+                self.signUpButton.isEnabled = false
             }, completion: { _ in self.signUpButton.isEnabled = true })
 
 
        if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
+                self.generalStackView.alpha = 0
+        }
             WebService.shared.loginRequests(loginNumber: 2,username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
                 if control{
                     DispatchQueue.main.async {
-                        User.setUser(username: self.userNameText.text!, email: self.emailText.text!, password: self.passwordText.text!)
                         self.performSegue(withIdentifier: "toMainVC", sender: nil)
                     }
                 }
                 else{
                     DispatchQueue.main.async {
-                        //self.generalStackView.bounds.origin.x += self.view.bounds.width
-                        self.generalStackView.alpha = 1
                         self.makeAlert(title: "Error", message: result ?? "An error occurred")
+                        self.generalStackView.alpha = 1
                     }
                 }
             }
-        
         }
        
         else{

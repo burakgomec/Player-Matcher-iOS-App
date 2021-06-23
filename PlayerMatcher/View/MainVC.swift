@@ -16,6 +16,7 @@ class MainVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
     }
     
     @IBAction func searchPlayer(_ sender: Any) {
@@ -41,5 +42,36 @@ class MainVC: UIViewController {
         }
     }
     
-
+    
+    @IBAction func increaseLevel(_ sender: Any) {
+        WebService.shared.levelUpRequest { control, player in
+            if control && player != nil{
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.isHidden = true
+                    let result = "You have reached level: \(String(describing: player!.level))"
+                    self.makeAlert(title: "Your level has increased", message: result)
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.isHidden = true
+                    self.makeAlert(title: "Error", message: "An error occurred in server")
+                }
+            }
+        }
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    
+    @IBAction func logOut(_ sender: Any) {
+        WebService.shared.logoutRequest()
+        self.dismiss(animated: true, completion: nil)
+       
+  
+    }
+    
+    
 }
