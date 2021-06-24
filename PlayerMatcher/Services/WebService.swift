@@ -103,31 +103,5 @@ class WebService{
         
     }
     
-    func logoutRequest(){//Post Request
-        /*
-        guard let username = User.getUser()?.username else { return }
-        
-        let url = URL(string: "http://localhost:5001/api/v1/Auth/logout")
-        var request = URLRequest(url: url!)
-       
-        let parameterDictionary = ["username":username, "token" : User.getUser()!.sessionToken]
-        
-        guard let bodyData = try? JSONSerialization.data(withJSONObject: parameterDictionary, options: []) else { return print("An error occurred in the body data")}
-        
-        request.httpMethod = "POST"
-        
-        //request.setValue("Application/json", forHTTPHeaderField: "Content-Type") //Content-Type : Application/json
-        request.httpBody = bodyData
-        
-
-        URLSession(configuration: URLSessionConfiguration.default).dataTask(with: url!) { data, response, error in
-            print(error?.localizedDescription)
-            print(response)
-        }.resume()
-        */
-    
-    }
-    
-
     private init(){}
 }

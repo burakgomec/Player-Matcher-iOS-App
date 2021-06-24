@@ -67,10 +67,8 @@ class MainVC: UIViewController {
     
     
     @IBAction func logOut(_ sender: Any) {
-        WebService.shared.logoutRequest()
+        User.clearUserData()
         self.dismiss(animated: true, completion: nil)
-       
-  
     }
     
     

@@ -36,7 +36,6 @@ class FirstVC: UIViewController {
     
   
     
-    
     override func viewWillAppear(_ animated: Bool) {
         self.generalStackView.alpha = 1
         generalStackView.bounds.origin.x += self.view.bounds.width

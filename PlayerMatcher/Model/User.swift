@@ -30,6 +30,10 @@ class User{
         }
     }
     
+    static func clearUserData(){
+        singleUser = nil
+    }
+    
     private init(username: String, email: String, password: String, token : String){
         self.username = username
         self.email = email
