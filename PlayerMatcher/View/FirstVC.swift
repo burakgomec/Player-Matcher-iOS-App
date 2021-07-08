@@ -34,7 +34,6 @@ class FirstVC: UIViewController {
         view.addGestureRecognizer(endEditingGesture)
     }
     
-  
     
     override func viewWillAppear(_ animated: Bool) {
         self.generalStackView.alpha = 1
@@ -90,10 +89,6 @@ class FirstVC: UIViewController {
         
         if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
             
-            UIView.animate(withDuration: 0.3,delay: 0, options: .curveEaseOut) {
-                self.generalStackView.alpha = 0
-            }
-
             WebService.shared.loginRequests(loginNumber: 1, username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
                 if control{
                     DispatchQueue.main.async {                      
@@ -103,7 +98,6 @@ class FirstVC: UIViewController {
                 else{
                     DispatchQueue.main.async {
                         self.makeAlert(title: "Error", message: result ?? "An error occurred")
-                        self.generalStackView.alpha = 1
                     }
                 }
             }
@@ -125,9 +119,7 @@ class FirstVC: UIViewController {
 
        if(userNameText.text?.trimmingCharacters(in: .whitespaces) != "" && emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""  && passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) != ""){
         
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
-                self.generalStackView.alpha = 0
-        }
+
             WebService.shared.loginRequests(loginNumber: 2,username: userNameText.text!, email: emailText.text!, password: passwordText.text!) { control, result in
                 if control{
                     DispatchQueue.main.async {
@@ -137,7 +129,6 @@ class FirstVC: UIViewController {
                 else{
                     DispatchQueue.main.async {
                         self.makeAlert(title: "Error", message: result ?? "An error occurred")
-                        self.generalStackView.alpha = 1
                     }
                 }
             }
